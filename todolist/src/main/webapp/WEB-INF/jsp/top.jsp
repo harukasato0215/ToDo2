@@ -12,7 +12,7 @@
 
         <form action="Top" method="post">
 
-            お名前：<input type="text" name="loginName" 　required="required">
+            お名前：<input type="text" name="loginName" required="required">
             <input type="submit" value="はじめる">
 
         </form>
