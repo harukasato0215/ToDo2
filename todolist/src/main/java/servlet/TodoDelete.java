@@ -10,8 +10,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import dao.TodoDAO;
 import model.Todo;
+import model.User;
 
 /**
  * Servlet implementation class TodoDelete
@@ -43,6 +46,13 @@ public class TodoDelete extends HttpServlet {
 	//タスクの内容を取得
 		String title =request.getParameter("title");
 		
+		//データベース
+		TodoDAO todoDAO = new TodoDAO();
+		
+		//ログインしている人のインスタンス
+		HttpSession session = request.getSession();
+		User user = (User)session.getAttribute("user");
+		
 		//todoList取得
 		ServletContext application = this.getServletContext();
 		List<Todo> todoList =(List<Todo>)application.getAttribute("todoList");
@@ -56,8 +66,10 @@ public class TodoDelete extends HttpServlet {
 			}
 		}
 		
+		
 		//削除
 		todoList.remove(taskNum);
+		todoDAO.deleteOne(title, timeLimit,user.getName());
 		
 		//登録
 		application.setAttribute("todoList", todoList);

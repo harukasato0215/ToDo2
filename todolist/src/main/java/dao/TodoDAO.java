@@ -83,5 +83,20 @@ public class TodoDAO {
 			this.disconnect();
 		}
 	}
+	//削除
+	public void deleteOne(String title, String timeLimit, String userName) {
+		try {
+			this.connect();
+			stmt = con.prepareStatement("DELETE FROM todo WHERE title=?title=?,timelimit=?,username=?");
+			stmt.setString(1, title);
+			stmt.setString(2, timeLimit);
+			stmt.setString(3, userName);
+			stmt.executeUpdate();
+		}catch(NamingException | SQLException e) {
+			System.out.println("接続失敗");
+		}finally {
+			this.disconnect();
+		}
+	}
 
 }

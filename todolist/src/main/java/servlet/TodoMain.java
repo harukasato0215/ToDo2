@@ -10,9 +10,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import dao.TodoDAO;
 import model.RegisterLogic;
 import model.Todo;
+import model.User;
 
 /**
  * Servlet implementation class todoMain
@@ -49,6 +52,15 @@ public class TodoMain extends HttpServlet {
 		//リストを取得
 		ServletContext application = this.getServletContext();
 		List<Todo> todoList = (List<Todo>) application.getAttribute("todoList");
+		
+		//ログインしている人のインスタンス
+		HttpSession session = request.getSession();
+		User user = (User)session.getAttribute("user");
+		
+		//リストを取得,データベースから名前と一致するTODOリストを探す
+		TodoDAO todoDAO = new TodoDAO();
+		todoDAO.findAll(user.getName());
+		
 
 		//入力内容取得
 		request.setCharacterEncoding("UTF-8");
@@ -60,8 +72,11 @@ public class TodoMain extends HttpServlet {
 		//登録
 		RegisterLogic registerTodo = new RegisterLogic();
 		registerTodo.execute(todo,todoList);
-		//アプリケーション保存
 		
+		//データベースにも登録
+		todoDAO.newTask( title, timeLimit,user.getName());
+		
+		//アプリケーション保存
 		application.setAttribute("todoList", todoList);
 
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/todoMain.jsp");
